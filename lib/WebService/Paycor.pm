@@ -8,7 +8,7 @@ use HTTP::CookieJar;
 use JSON;
 use URI;
 use Ouch;
-use Digest::HMAC_SHA1
+use Digest::HMAC_SHA1;
 use Moo;
 
 =head1 NAME
@@ -33,7 +33,7 @@ The module takes care of all of these things for you:
 
 =item Adding authentication headers
 
-C<WebService::Paycor> adds an authentication header of the type "Authorization: Bearer C<$tj-E<gt>api_key>" to each request.
+C<WebService::Paycor> adds the authentication header of the type "paycorapi: <lt>Public Key<gt> <lt>HMAC SHA1 Digest<gt>" to each request.
 
 =item Adding api version number to URLs
 
@@ -201,7 +201,7 @@ The path to the REST interface you wish to call.
 
 =item params
 
-A hash reference of parameters you wish to pass to Tax Jar.  This will be translated to JSON.
+A hash reference of parameters you wish to pass to Paycor.  This will be translated to JSON.
 
 =back
 
@@ -226,7 +226,7 @@ The path to the REST interface you wish to call.
 
 =item params
 
-A hash reference of parameters you wish to pass to Tax Jar.  They will be encoded as JSON.
+A hash reference of parameters you wish to pass to Paycor.  They will be encoded as JSON.
 
 =back
 
@@ -306,11 +306,11 @@ L<Moo>
 
 =item Repository
 
-L<https://github.com/perldreamer/WebService-TaxJar>
+L<https://github.com/perldreamer/WebService-Paycor>
 
 =item Bug Reports
 
-L<https://github.com/perldreamer/WebService-TaxJar/issues>
+L<https://github.com/perldreamer/WebService-Paycor/issues>
 
 =back
 
@@ -320,7 +320,7 @@ Colin Kuskie <colink_at_plainblack_dot_com>
 
 =head1 LEGAL
 
-This module is Copyright 2019 Plain Black Corporation. It is distributed under the same terms as Perl itself. 
+This module is Copyright 2020 Plain Black Corporation. It is distributed under the same terms as Perl itself. 
 
 =cut
 
