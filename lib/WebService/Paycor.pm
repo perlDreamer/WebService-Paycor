@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-package WebService::Taxcor;
+package WebService::Paycor;
 
 use HTTP::Thin;
 use HTTP::Request::Common qw/GET DELETE PUT POST/;
