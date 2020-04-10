@@ -9,6 +9,7 @@ use JSON;
 use URI;
 use Ouch;
 use Digest::HMAC_SHA1;
+use HTTP::Date;
 use Moo;
 
 =head1 NAME
@@ -253,12 +254,17 @@ sub _create_uri {
 sub _add_auth_header {
     my $self    = shift;
     my $request = shift;
+    my $time = time();
+    my $date_string = time2str($time);
+    $request->header('Date' => $date_string);
     my $message = join "\n",
                     $request->method,
                     '',
                     '',
-                    $request->header('Date'),
+                    $date_string,
                     $request->uri;
+    warn $message;
+    warn $request->header('Date');
     my $digest = Digest::HMAC_SHA1->new($self->private_key);
     $digest->add($message);
     $request->header( paycorapi => $self->public_key().' '.$digest->b64digest );
