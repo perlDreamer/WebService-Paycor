@@ -247,7 +247,7 @@ sub post {
 sub _create_uri {
     my $self = shift;
     my $path = shift;
-    my $host = 'https://secure.paycor.com/';
+    my $host = 'https://secure.paycor.com';
     return URI->new(join '/', $host, $path);
 }
 
@@ -257,14 +257,16 @@ sub _add_auth_header {
     my $time = time();
     my $date_string = time2str($time);
     $request->header('Date' => $date_string);
-    my $message = join "\n",
+    my $message = join "\r\n",
                     $request->method,
                     '',
                     '',
                     $date_string,
-                    $request->uri;
-    warn $message;
-    warn $request->header('Date');
+                    $request->uri,
+                    ''
+                ;
+    warn $message. "\n";
+    warn length($message)."\n";
     my $digest = Digest::HMAC_SHA1->new($self->private_key);
     $digest->add($message);
     $request->header( paycorapi => $self->public_key().' '.$digest->b64digest );
