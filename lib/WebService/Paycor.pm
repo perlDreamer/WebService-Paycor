@@ -140,6 +140,10 @@ has last_response => (
     required => 0,
 );
 
+has [qw/_path _query/] => (
+    is => 'rw',
+);
+
 =head2 get(path, params)
 
 Performs a C<GET> request, which is used for reading data from the service.
@@ -160,8 +164,10 @@ A hash reference of parameters you wish to pass to the web service.  These param
 
 sub get {
     my ($self, $path, $params) = @_;
+    $self->_path($path);
     my $uri = $self->_create_uri($path);
     $uri->query_form($params);
+    $self->_query($uri->query);
     return $self->_process_request( GET $uri->as_string );
 }
 
@@ -185,8 +191,10 @@ A hash reference of parameters you wish to pass to the web service.  These param
 
 sub delete {
     my ($self, $path, $params) = @_;
+    $self->_path($path);
     my $uri = $self->_create_uri($path);
     $uri->query_form($params);
+    $self->_query($uri->query_form);
     return $self->_process_request( DELETE $uri->as_string );
 }
 
@@ -210,6 +218,8 @@ A hash reference of parameters you wish to pass to Paycor.  This will be transla
 
 sub put {
     my ($self, $path, $params) = @_;
+    $self->_path($path);
+    $self->_query('');
     my $uri = $self->_create_uri($path);
     my %headers = ( Content => to_json($params), "Content-Type" => 'application/json', );
     return $self->_process_request( POST $uri->as_string,  %headers );
@@ -239,6 +249,8 @@ The path you provide as arguments to the request methods C<get, post, put delete
 
 sub post {
     my ($self, $path, $params) = @_;
+    $self->_path($path);
+    $self->_query('');
     my $uri = $self->_create_uri($path);
     my %headers = ( Content => to_json($params), "Content-Type" => 'application/json', );
     return $self->_process_request( POST $uri->as_string, %headers );
@@ -248,6 +260,7 @@ sub _create_uri {
     my $self = shift;
     my $path = shift;
     my $host = 'https://secure.paycor.com';
+    $path =~ s{^/}{};
     return URI->new(join '/', $host, $path);
 }
 
@@ -257,12 +270,16 @@ sub _add_auth_header {
     my $time = time();
     my $date_string = time2str($time);
     $request->header('Date' => $date_string);
+    my $path = $self->_path();
+    if ($self->_query) {
+        $path .= '?' . $self->_query;
+    }
     my $message = join "\r\n",
                     $request->method,
                     '',
                     '',
                     $date_string,
-                    $request->uri,
+                    $path,
                     ''
                 ;
     warn $message. "\n";
