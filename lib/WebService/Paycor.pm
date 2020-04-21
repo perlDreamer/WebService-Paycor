@@ -286,7 +286,11 @@ sub _add_auth_header {
     warn length($message)."\n";
     my $private_bytes = pack "H*", $self->private_key;
     my $digest = Digest::HMAC_SHA1->new($private_bytes);
-    $digest->add($message);
+    my @chars = split //, $message;
+    @chars = reverse @chars;
+    foreach my $char (@chars) {
+        $digest->add(ord($char)+0);
+    }
     $request->header( paycorapi => $self->public_key().' '.$digest->b64digest );
     return;
 }
